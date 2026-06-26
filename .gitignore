@@ -1,0 +1,16 @@
+# Build artifacts (zips are regenerable from source)
+dist/
+
+# Audit output folders created at runtime
+SeatScout-Report-*/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.user
+.vs/
+.vscode/
+
+# Local secrets / config overrides (never commit credentials)
+*.local
+.env

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SeatScout — Find wasted Microsoft 365 licenses. Recover the spend.</title>
+<meta name="description" content="SeatScout audits your Microsoft 365 tenant read-only and shows exactly how much license spend you can recover — unused, inactive, disabled and over-provisioned seats, quantified in dollars. Runs in your tenant; nothing leaves it.">
+<!-- TODO(owner): replace LEMONSQUEEZY_* placeholders with your real checkout/links before launch -->
+<style>
+:root{--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--accent:#2563eb;--accent2:#1d4ed8;--good:#059669;--bg:#f8fafc;--card:#fff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0;color:var(--ink);background:var(--bg);line-height:1.55}
+a{color:var(--accent);text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+.btn{display:inline-block;background:var(--accent);color:#fff;padding:12px 22px;border-radius:10px;font-weight:600;border:0;cursor:pointer;font-size:15px}
+.btn:hover{background:var(--accent2)}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.btn.lg{padding:15px 30px;font-size:16px}
+nav{position:sticky;top:0;background:rgba(248,250,252,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);z-index:50}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
+.logo{font-weight:800;font-size:19px;letter-spacing:-.02em}.logo span{color:var(--accent)}
+nav .links a{color:var(--ink);margin-left:22px;font-size:14px;font-weight:500}
+.hero{padding:72px 0 48px;text-align:center}
+.hero h1{font-size:46px;line-height:1.08;margin:0 0 18px;letter-spacing:-.03em;font-weight:800}
+.hero h1 .hl{color:var(--good)}
+.hero p.lead{font-size:19px;color:var(--muted);max-width:680px;margin:0 auto 28px}
+.cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.trust{margin-top:18px;font-size:13px;color:var(--muted)}
+.badge{display:inline-block;background:#ecfdf5;color:var(--good);border:1px solid #a7f3d0;border-radius:999px;padding:3px 12px;font-size:12px;font-weight:600}
+section{padding:54px 0}
+h2.t{font-size:30px;text-align:center;letter-spacing:-.02em;margin:0 0 10px}
+p.sub{text-align:center;color:var(--muted);max-width:640px;margin:0 auto 36px;font-size:16px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;text-align:center}
+.stat .n{font-size:34px;font-weight:800;color:var(--accent)}
+.stat .l{color:var(--muted);font-size:14px;margin-top:4px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.feature{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px}
+.feature h3{margin:.2em 0 .4em;font-size:17px}.feature p{color:var(--muted);font-size:14px;margin:0}
+.ico{width:38px;height:38px;border-radius:9px;background:#eff6ff;color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;counter-reset:s}
+.step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;position:relative}
+.step::before{counter-increment:s;content:counter(s);position:absolute;top:-14px;left:22px;width:30px;height:30px;background:var(--accent);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.preview{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;box-shadow:0 8px 30px rgba(2,6,23,.06);max-width:720px;margin:0 auto;text-align:center}
+.preview .big{font-size:42px;font-weight:800;color:var(--good)}
+.pcards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0 4px}
+.pcard{border:1px solid var(--line);border-radius:10px;padding:12px}.pcard .n{font-weight:700;font-size:18px}.pcard .l{color:var(--muted);font-size:11px}
+.pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start}
+.plan{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;display:flex;flex-direction:column}
+.plan.feat{border:2px solid var(--accent);box-shadow:0 10px 30px rgba(37,99,235,.12)}
+.plan .name{font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.plan .price{font-size:40px;font-weight:800;margin:6px 0}.plan .price small{font-size:15px;color:var(--muted);font-weight:500}
+.plan ul{list-style:none;padding:0;margin:14px 0 22px;flex:1}
+.plan li{padding:7px 0 7px 26px;position:relative;font-size:14px;border-bottom:1px solid var(--line)}
+.plan li::before{content:"✓";position:absolute;left:0;color:var(--good);font-weight:800}
+.plan li.no{color:var(--muted)}.plan li.no::before{content:"–";color:var(--muted)}
+.tag{display:inline-block;background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;margin-bottom:8px}
+.faq{max-width:760px;margin:0 auto}
+.qa{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:12px}
+.qa h4{margin:0 0 6px;font-size:16px}.qa p{margin:0;color:var(--muted);font-size:14px}
+.cta-final{background:var(--ink);color:#fff;border-radius:20px;padding:48px;text-align:center}
+.cta-final h2{font-size:30px;margin:0 0 10px}.cta-final p{color:#cbd5e1;margin:0 0 24px}
+footer{padding:36px 0;color:var(--muted);font-size:13px;text-align:center;border-top:1px solid var(--line)}
+footer .src{font-size:11px;max-width:780px;margin:14px auto 0;color:#94a3b8}
+@media(max-width:820px){.grid3,.steps,.pricing,.stats,.pcards{grid-template-columns:1fr}.hero h1{font-size:34px}nav .links{display:none}}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <div class="logo">Seat<span>Scout</span></div>
+  <div class="links">
+    <a href="#how">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#faq">FAQ</a>
+    <a class="btn" href="#pricing" style="color:#fff;padding:8px 16px">Get SeatScout</a>
+  </div>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="badge">Microsoft 365 prices rose up to 33% on July 1, 2026</div>
+  <h1>Find the Microsoft 365 licenses<br>you're paying for and <span class="hl">nobody's using</span></h1>
+  <p class="lead">SeatScout audits your tenant in minutes — unused, inactive, disabled, and over-provisioned seats — and shows exactly how much you can recover, in dollars. Read-only. Runs in your tenant. Nothing ever leaves it.</p>
+  <div class="cta-row">
+    <a class="btn lg" href="#pricing">See pricing</a>
+    <a class="btn lg ghost" href="LEMONSQUEEZY_LITE_URL">Download free Lite →</a>
+  </div>
+  <div class="trust">No agent to install · No data collected · PowerShell + Microsoft Graph · Cancel-anytime ownership (one-time price)</div>
+</div></header>
+
+<section style="padding-top:8px"><div class="wrap">
+  <div class="stats">
+    <div class="stat"><div class="n">25–30%</div><div class="l">of SaaS license spend is wasted on average (Gartner)</div></div>
+    <div class="stat"><div class="n">$39 / $60</div><div class="l">monthly list price of one M365 E3 / E5 seat — every idle seat adds up</div></div>
+    <div class="stat"><div class="n">~5 min</div><div class="l">to a CFO-ready savings report from your tenant</div></div>
+  </div>
+</div></section>
+
+<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
+  <h2 class="t">What SeatScout finds</h2>
+  <p class="sub">Free scripts can list inactive users. SeatScout turns raw data into money and a plan — quantified, prioritized, and client-ready.</p>
+  <div class="grid3">
+    <div class="feature"><div class="ico">$</div><h3>Unassigned purchased seats</h3><p>Seats you bought but never assigned to anyone. The fastest, cleanest refund at renewal.</p></div>
+    <div class="feature"><div class="ico">⊘</div><h3>Disabled but licensed</h3><p>Blocked accounts still consuming paid licenses month after month.</p></div>
+    <div class="feature"><div class="ico">∅</div><h3>Never signed in</h3><p>Licensed users who have never logged in — provisioned and forgotten.</p></div>
+    <div class="feature"><div class="ico">⌛</div><h3>Inactive users</h3><p>No sign-in in N days (you choose the threshold). Reclaim or reassign.</p></div>
+    <div class="feature"><div class="ico">⇄</div><h3>Overlapping plans</h3><p>Users carrying two productivity plans (e.g. E3 + E5) at once.</p></div>
+    <div class="feature"><div class="ico">↓</div><h3>Downgrade candidates</h3><p>E5 seats to review for an E3 fit — $21/user/mo back when it's a match.</p></div>
+  </div>
+</div></section>
+
+<section id="report"><div class="wrap">
+  <h2 class="t">A report you can hand to a CFO</h2>
+  <p class="sub">One number up top, the evidence below, a remediation checklist at the end. White-label it with your own name on the Pro tier.</p>
+  <div class="preview">
+    <div style="color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em">Estimated recoverable spend</div>
+    <div class="big">$13,056<span style="font-size:16px;color:var(--muted)"> / year</span></div>
+    <div style="color:var(--muted);font-size:13px">$1,088 / month · <span class="badge">read-only · nothing left the tenant</span></div>
+    <div class="pcards">
+      <div class="pcard"><div class="n">5</div><div class="l">License SKUs</div></div>
+      <div class="pcard"><div class="n">5</div><div class="l">Disabled + licensed</div></div>
+      <div class="pcard"><div class="n">16</div><div class="l">Inactive / never used</div></div>
+      <div class="pcard"><div class="n">15</div><div class="l">Unassigned seats</div></div>
+    </div>
+    <div style="font-size:12px;color:var(--muted)">Example output from a 100-seat sample tenant.</div>
+    <div style="margin-top:18px"><a class="btn" href="../sample/SeatScout-Report.html" target="_blank">View the full sample report →</a></div>
+  </div>
+</div></section>
+
+<section id="how" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
+  <h2 class="t">How it works</h2>
+  <p class="sub">No SaaS sign-up, no tenant connection to a third party. You run it; the report stays with you.</p>
+  <div class="steps">
+    <div class="step"><h3>Connect read-only</h3><p>Run the PowerShell script. It signs in to Microsoft Graph with read-only scopes you consent to. SeatScout has no servers — nothing is sent anywhere.</p></div>
+    <div class="step"><h3>Scan & quantify</h3><p>It reads your SKUs, license assignments and sign-in activity, applies your price table, and computes recoverable spend.</p></div>
+    <div class="step"><h3>Act on the report</h3><p>Open the HTML report + CSVs, work the remediation checklist, and reclaim seats at renewal. Re-run monthly.</p></div>
+  </div>
+</div></section>
+
+<section id="pricing"><div class="wrap">
+  <h2 class="t">Simple, one-time pricing</h2>
+  <p class="sub">Buy it once, own it. A single reclaimed E3 seat pays for the Solo tier in under two months.</p>
+  <div class="pricing">
+    <div class="plan">
+      <div class="name">Lite</div>
+      <div class="price">Free</div>
+      <ul>
+        <li>Inactive &amp; unused-license CSV</li>
+        <li>Disabled-but-licensed list</li>
+        <li>Single tenant</li>
+        <li class="no">Dollar quantification</li>
+        <li class="no">HTML savings report</li>
+        <li class="no">Overlap &amp; downgrade analysis</li>
+      </ul>
+      <a class="btn ghost" href="LEMONSQUEEZY_LITE_URL">Download free</a>
+    </div>
+    <div class="plan feat">
+      <span class="tag">Most popular</span>
+      <div class="name">Solo</div>
+      <div class="price">$49<small> one-time</small></div>
+      <ul>
+        <li>Everything in Lite</li>
+        <li>Full <b>dollar-quantified</b> savings report (HTML)</li>
+        <li>All findings as CSVs</li>
+        <li>Overlap &amp; downgrade advisory</li>
+        <li>1 tenant · email support</li>
+        <li>12 months of updates</li>
+      </ul>
+      <a class="btn" href="LEMONSQUEEZY_SOLO_URL">Get Solo — $49</a>
+    </div>
+    <div class="plan">
+      <div class="name">Pro · for consultants &amp; MSPs</div>
+      <div class="price">$129<small> one-time</small></div>
+      <ul>
+        <li>Everything in Solo</li>
+        <li><b>White-label</b> report (your name &amp; logo)</li>
+        <li><b>Unlimited client tenants</b></li>
+        <li>Priority support</li>
+        <li>12 months of updates</li>
+      </ul>
+      <a class="btn" href="LEMONSQUEEZY_PRO_URL">Get Pro — $129</a>
+    </div>
+  </div>
+  <p style="text-align:center;color:var(--muted);font-size:13px;margin-top:18px">Pay securely via Lemon Squeezy (handles VAT/tax worldwide). Instant download.</p>
+</div></section>
+
+<section id="faq" style="background:#fff;border-top:1px solid var(--line)"><div class="wrap">
+  <h2 class="t">Questions</h2>
+  <div class="faq">
+    <div class="qa"><h4>Does my tenant data leave my environment?</h4><p>No. SeatScout is a script that runs inside your tenant against Microsoft Graph. There is no SeatScout server and nothing is uploaded. The report is written to your own machine.</p></div>
+    <div class="qa"><h4>What permissions does it need?</h4><p>Read-only Microsoft Graph scopes: Organization.Read.All, User.Read.All, Directory.Read.All, and AuditLog.Read.All (for sign-in activity). You consent at run time. It never writes changes.</p></div>
+    <div class="qa"><h4>Do I need Microsoft Entra ID P1?</h4><p>Sign-in activity needs Entra ID P1. Without it, SeatScout still finds disabled-but-licensed, never-signed-in and unassigned seats — and tells you the real waste is likely higher.</p></div>
+    <div class="qa"><h4>Are the prices accurate?</h4><p>SeatScout ships with editable list prices. You set your actual contracted/regional prices in one CSV, so the dollar figures match your agreement. SKUs without a price are excluded from totals.</p></div>
+    <div class="qa"><h4>Will it change anything in my tenant?</h4><p>Never. It is strictly read-only and produces a report plus a remediation checklist. You decide what to action.</p></div>
+    <div class="qa"><h4>Can I use it across client tenants?</h4><p>Yes — the Pro tier is licensed for unlimited client tenants and white-labels the report with your brand, built for consultants and MSPs.</p></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="cta-final">
+    <h2>See what you're wasting — free</h2>
+    <p>Run the free Lite audit today. Upgrade only if the number is worth it (it usually is).</p>
+    <div class="cta-row">
+      <a class="btn lg" href="LEMONSQUEEZY_LITE_URL" style="background:#fff;color:var(--ink)">Download free Lite</a>
+      <a class="btn lg ghost" href="#pricing" style="color:#fff;border-color:#475569">Compare plans</a>
+    </div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="logo" style="font-size:16px">Seat<span>Scout</span></div>
+  <div style="margin-top:6px">Recover wasted Microsoft 365 license spend. · seatscout.com</div>
+  <div style="margin-top:10px"><a href="#pricing">Pricing</a> · <a href="#faq">FAQ</a> · <a href="mailto:LEMONSQUEEZY_SUPPORT_EMAIL">Support</a></div>
+  <p class="src">Sources: Microsoft 365 2026 pricing & July 1 2026 increases (Microsoft Licensing). Average SaaS license waste of 25–30% (Gartner, as cited by license-optimization vendors). SeatScout is an independent tool and is not affiliated with or endorsed by Microsoft. "Microsoft 365", "Entra", and related names are trademarks of Microsoft.</p>
+</div></footer>
+</body>
+</html>

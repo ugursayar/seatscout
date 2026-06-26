@@ -1,0 +1,40 @@
+SeatScout — End User License Agreement (v1.0)
+
+This is a plain-language license for the SeatScout audit toolkit ("the Software").
+By using the Software you agree to the terms below.
+
+1. LICENSE GRANT
+   - Lite (free): you may use the Software to produce the basic CSV outputs for evaluation
+     and internal use, at no charge.
+   - Solo (paid): a single-organization license. You may use the Software to audit the
+     Microsoft 365 tenant(s) belonging to your own organization.
+   - Pro (paid): a consultant/MSP license. You may use the Software to audit Microsoft 365
+     tenants of clients you administer, and may white-label the generated report with your
+     own name and logo.
+
+2. RESTRICTIONS
+   You may not resell, sublicense, rent, or redistribute the Software itself or its source
+   code. You may freely share the REPORTS you generate with it. Do not remove copyright or
+   attribution notices from the Software's source files.
+
+3. READ-ONLY TOOL
+   The Software performs read-only queries against Microsoft Graph and does not modify your
+   tenant. Any remediation actions you take based on the report are your own responsibility.
+
+4. NO WARRANTY
+   The Software is provided "AS IS", without warranty of any kind. Savings figures are
+   estimates intended to prioritize action and are not a guarantee of actual savings or a
+   billing statement. To the maximum extent permitted by law, the author is not liable for
+   any damages arising from use of the Software.
+
+5. UPDATES
+   Paid tiers include updates for 12 months from purchase.
+
+6. TRADEMARKS
+   SeatScout is an independent tool and is not affiliated with, endorsed by, or sponsored by
+   Microsoft. "Microsoft 365", "Microsoft Entra", and related names are trademarks of
+   Microsoft Corporation.
+
+Questions: SUPPORT_EMAIL_PLACEHOLDER  ·  seatscout.com
+
+(c) 2026 SeatScout. All rights reserved.
