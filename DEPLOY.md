@@ -13,11 +13,11 @@ The marketing site lives in `site/` (landing page + blog). It's static HTML — 
    - **Build command:** *(leave empty)*
    - **Build output directory:** `site`
 4. **Save and Deploy.** You'll get a `*.pages.dev` URL in ~1 minute. Test it.
-5. **Custom domain:** Pages → your project → **Custom domains** → add `seatscout.com` (and `www`). Follow the DNS prompt.
+5. **Custom domain:** Pages → your project → **Custom domains** → add `seatscout.dev` (and `www`). Follow the DNS prompt.
    - Easiest: move the domain's nameservers to Cloudflare (Cloudflare will tell you the two NS records to set at your registrar). Then the domain + DNS + SSL are all managed in one place.
 6. Every `git push` to `main` auto-redeploys. (My Composio push path already keeps the repo current.)
 
-**Result:** `https://seatscout.com` serves `site/index.html`, and `https://seatscout.com/blog/how-to-find-wasted-microsoft-365-licenses` serves the blog post.
+**Result:** `https://seatscout.dev` serves `site/index.html`, and `https://seatscout.dev/blog/how-to-find-wasted-microsoft-365-licenses` serves the blog post.
 
 ---
 
