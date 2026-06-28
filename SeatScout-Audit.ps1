@@ -61,7 +61,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$script:Version = '1.0.0'
+$script:Version = '1.0.1'
 $script:Edition = 'Pro'   # build edition (set per package): Lite | Solo | Pro
 $nowUtc = (Get-Date).ToUniversalTime()
 
@@ -120,12 +120,22 @@ function Get-TenantData {
     $skus = Get-MgSubscribedSku -All
 
     Write-Step "Reading users (license + sign-in activity)..."
-    $select = 'id,displayName,userPrincipalName,accountEnabled,assignedLicenses,createdDateTime,signInActivity'
-    $users  = Get-MgUser -All -Property $select -ConsistencyLevel eventual
+    # signInActivity requires Entra ID P1; on non-premium tenants Graph 403s the whole query,
+    # so try with it, then fall back to a query without it (disabled + unassigned-seat analysis only).
+    $baseProps = 'id,displayName,userPrincipalName,accountEnabled,assignedLicenses,createdDateTime'
+    $signInRetrievable = $true
+    try {
+        $users = Get-MgUser -All -Property ($baseProps + ',signInActivity') -ErrorAction Stop
+    } catch {
+        Write-Warn "Sign-in activity needs Microsoft Entra ID P1 - retrying without it (disabled + unassigned-seat analysis only)."
+        $signInRetrievable = $false
+        $users = Get-MgUser -All -Property $baseProps -ErrorAction Stop
+    }
 
     # Normalize Graph objects into the same shape as the mock JSON
     $data = [pscustomobject]@{
-        organization   = [pscustomobject]@{ displayName = $org.DisplayName; id = $org.Id }
+        organization      = [pscustomobject]@{ displayName = $org.DisplayName; id = $org.Id }
+        signInRetrievable = $signInRetrievable
         subscribedSkus = $skus | ForEach-Object {
             [pscustomobject]@{
                 skuId         = $_.SkuId
@@ -150,7 +160,7 @@ function Get-TenantData {
     return $data
 }
 
-# ----------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------
 # Analysis
 # ----------------------------------------------------------------------------------------------
 function Invoke-Analysis {
@@ -167,17 +177,19 @@ function Invoke-Analysis {
         $price    = if ($meta) { $meta.Price } else { $null }
         $purchased = [int]$s.prepaidUnits.enabled
         $consumed  = [int]$s.consumedUnits
-        $unassigned = [math]::Max(0, $purchased - $consumed)
+        $isUnlimited = $purchased -gt 100000   # Microsoft sentinel for free / unlimited self-service SKUs
+        $unassigned = if ($isUnlimited) { 0 } else { [math]::Max(0, $purchased - $consumed) }
         $info = [pscustomobject]@{
             SkuId=$s.skuId; PartNumber=$s.skuPartNumber; Friendly=$friendly; Price=$price
-            Purchased=$purchased; Consumed=$consumed; Unassigned=$unassigned
-            UnassignedWasteMonthly = if ($price) { $unassigned * $price } else { $null }
+            Purchased=$purchased; Consumed=$consumed; Unassigned=$unassigned; IsUnlimited=$isUnlimited
+            UnassignedWasteMonthly = if ($price -and -not $isUnlimited) { $unassigned * $price } else { $null }
         }
         $skuById[$s.skuId] = $info
         $skuMeta += $info
     }
 
     $cutoff = $nowUtc.AddDays(-$InactiveDays)
+    $signInRetrievable = if ($null -ne $Data.signInRetrievable) { [bool]$Data.signInRetrievable } else { $true }
 
     $disabled=@(); $never=@(); $inactive=@(); $overlap=@(); $downgrade=@()
 
@@ -207,12 +219,14 @@ function Invoke-Analysis {
         if (-not $u.accountEnabled) {
             $disabled += $row
         }
-        elseif (-not $lastSignIn) {
-            # never signed in - only flag if the account is old enough to be meaningful
-            if (-not $created -or $created -lt $cutoff) { $never += $row }
-        }
-        elseif ($lastSignIn -lt $cutoff) {
-            $inactive += $row
+        elseif ($signInRetrievable) {
+            if (-not $lastSignIn) {
+                # never signed in - only flag if the account is old enough to be meaningful
+                if (-not $created -or $created -lt $cutoff) { $never += $row }
+            }
+            elseif ($lastSignIn -lt $cutoff) {
+                $inactive += $row
+            }
         }
 
         # overlap (advisory): more than one base productivity plan
@@ -258,7 +272,7 @@ function Invoke-Analysis {
         Disabled=$disabled; Never=$never; Inactive=$inactive; Overlap=$overlap; Downgrade=$downgrade
         DisabledMonthly=$disabledM; NeverMonthly=$neverM; InactiveMonthly=$inactiveM; UnassignedMonthly=$unassignedM
         RecoverableMonthly=$recoverableMonthly; RecoverableAnnual=($recoverableMonthly*12)
-        SignInDataAvailable=$signInDataAvailable
+        SignInDataAvailable=$signInRetrievable
         UnpricedSkus=$unpriced
         TotalUsersLicensed = ($Disabled.Count + $never.Count + $inactive.Count) # placeholder recalculated below
     }
@@ -267,14 +281,14 @@ function Invoke-Analysis {
 # ----------------------------------------------------------------------------------------------
 # Reporting
 # ----------------------------------------------------------------------------------------------
-function Format-Money { param($n) "{0}{1:N0}" -f $script:CurSym, [double]$n }
+function Format-Money { param($n) [string]::Format([cultureinfo]::GetCultureInfo('en-US'), '{0}{1:N0}', $script:CurSym, [double]$n) }
 
 function New-HtmlReport {
     param($R, [string]$Path, [string]$CompanyName)
 
     $script:CurSym = $CurrencySymbol
     $brand = if ($CompanyName) { $CompanyName } else { 'SeatScout' }
-    $orgName = if ($R.Org.displayName) { $R.Org.displayName } else { 'Your tenant' }
+    $orgName = if ($R.Org.displayName) { $R.Org.sisplayName } else { 'Your tenant' }
     $generated = $nowUtc.ToString('yyyy-MM-dd HH:mm') + ' UTC'
 
     $rowsToHtml = {
@@ -290,7 +304,7 @@ function New-HtmlReport {
     $monthly = Format-Money $R.RecoverableMonthly
 
     $signinNote = if ($R.SignInDataAvailable) { '' } else {
-        "<div class='callout warn'>Sign-in activity was not available for this tenant (requires Microsoft Entra ID P1 + AuditLog.Read.All). Inactivity figures fall back to <b>disabled</b> and <b>never-signed-in</b> accounts only, so real waste is likely <b>higher</b> than shown.</div>"
+        "<div class='callout warn'>Sign-in activity was not available for this tenant (requires Microsoft Entra ID P1). Never-signed-in and inactive-user detection are therefore skipped - this report shows <b>disabled-but-licensed</b> and <b>unassigned seats</b> only, so real waste is likely <b>higher</b>. Add Entra ID P1 (or a free trial) and re-run for the full picture.</div>"
     }
     $unpricedNote = if ($R.UnpricedSkus.Count -gt 0) {
         $names = ($R.UnpricedSkus | ForEach-Object { $_.Friendly }) -join ', '
@@ -306,7 +320,9 @@ function New-HtmlReport {
     $skuRows = ($R.Skus | Sort-Object PartNumber | ForEach-Object {
         $p = if ($_.Price) { Format-Money $_.Price } else { "<span class='muted'>not set</span>" }
         $w = if ($_.UnassignedWasteMonthly) { Format-Money $_.UnassignedWasteMonthly } else { '-' }
-        "<tr><td>$($_.Friendly)</td><td class='mono'>$($_.PartNumber)</td><td>$($_.Purchased)</td><td>$($_.Consumed)</td><td>$($_.Unassigned)</td><td>$p</td><td>$w</td></tr>"
+        $pur = if ($_.IsUnlimited) { 'unlimited' } else { $_.Purchased }
+        $un  = if ($_.IsUnlimited) { '&mdash;' } else { $_.Unassigned }
+        "<tr><td>$($_.Friendly)</td><td class='mono'>$($_.PartNumber)</td><td>$pur</td><td>$($_.Consumed)</td><td>$un</td><td>$p</td><td>$w</td></tr>"
     }) -join "`n"
 
     # simple CSS bar chart of the four buckets
@@ -419,7 +435,7 @@ Generated by SeatScout v$script:Version &middot; seatscout.com &middot; This rep
 
 # ----------------------------------------------------------------------------------------------
 # Main
-# ----------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------
 Write-Host ""
 Write-Host "  SeatScout v$script:Version - Microsoft 365 license waste audit" -ForegroundColor Green
 Write-Host "  Read-only. Runs in your tenant. Nothing leaves your environment." -ForegroundColor DarkGray
