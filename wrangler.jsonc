@@ -1,0 +1,15 @@
+{
+  // SeatScout marketing site — served as a Workers static-assets ("assets-only") Worker.
+  // Deploy locally:  npx wrangler login  &&  npx wrangler deploy
+  "name": "seatscout",
+  "compatibility_date": "2026-06-01",
+  "assets": {
+    "directory": "./site"
+  },
+  // Wires the custom domain automatically on deploy (DNS + cert handled by Cloudflare,
+  // since seatscout.dev is in your account). If this line ever errors, delete the whole
+  // "routes" block and add the domain via the dashboard: Worker > Settings > Domains & Routes.
+  "routes": [
+    { "pattern": "seatscout.dev", "custom_domain": true }
+  ]
+}
