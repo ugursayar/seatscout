@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Find Wasted Microsoft 365 Licenses (2026 Guide) | SeatScout</title>
+<meta name="description" content="A practical 2026 guide to finding unused, inactive, and over-provisioned Microsoft 365 licenses with Microsoft Graph and PowerShell — and turning the waste into a dollar figure you can act on.">
+<link rel="canonical" href="https://seatscout.com/blog/how-to-find-wasted-microsoft-365-licenses">
+<meta property="og:title" content="How to Find Wasted Microsoft 365 Licenses (2026 Guide)">
+<meta property="og:description" content="Find unused, inactive, and over-provisioned M365 licenses with Microsoft Graph — quantified in dollars.">
+<meta property="og:type" content="article">
+<style>
+:root{color-scheme:light;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--accent:#2563eb;--good:#059669;--bg:#f8fafc;--code:#0b1220}
+*{box-sizing:border-box}body{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0;color:var(--ink);background:var(--bg);line-height:1.65}
+.wrap{max-width:760px;margin:0 auto;padding:0 24px}
+nav{border-bottom:1px solid var(--line);background:#fff}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:800;font-size:19px;letter-spacing:-.02em}.logo span{color:var(--accent)}
+a{color:var(--accent);text-decoration:none}
+article{padding:48px 0 64px}
+h1{font-size:34px;line-height:1.15;letter-spacing:-.02em;margin:0 0 10px}
+.meta{color:var(--muted);font-size:14px;margin-bottom:28px}
+h2{font-size:22px;margin:34px 0 10px;letter-spacing:-.01em}
+h3{font-size:17px;margin:22px 0 6px}
+p,li{font-size:16px}
+ul,ol{padding-left:22px}
+pre{background:var(--code);color:#e2e8f0;padding:16px;border-radius:10px;overflow:auto;font-size:13px;line-height:1.5}
+code{font-family:ui-monospace,Consolas,monospace}
+p code,li code{background:#eef2f7;color:#0b1220;padding:1px 6px;border-radius:5px;font-size:14px}
+.callout{background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px 16px;margin:18px 0;font-size:15px}
+.cta{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;margin:34px 0;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.btn{display:inline-block;background:var(--accent);color:#fff;padding:12px 22px;border-radius:10px;font-weight:600;margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:15px;margin:14px 0}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}th{font-size:13px;color:var(--muted)}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <a class="logo" href="/">Seat<span>Scout</span></a>
+  <a href="/#pricing">Get SeatScout</a>
+</div></nav>
+
+<article><div class="wrap">
+  <h1>How to find wasted Microsoft 365 licenses (2026 guide)</h1>
+  <div class="meta">Microsoft 365 cost optimization · ~7 min read</div>
+
+  <p>Microsoft raised Microsoft 365 list prices on July 1, 2026 — Microsoft 365 E3 to $39 and E5 to $60 per user, per month. For most organizations the bigger problem isn't the new price; it's how many of those seats are doing nothing. Gartner estimates organizations waste <strong>25–30% of SaaS license spend</strong> on unused or underutilized licenses. On a 100-seat E3 tenant, that's roughly <strong>$9,000 a year</strong> hiding in plain sight.</p>
+
+  <p>This guide shows exactly where M365 license waste accumulates, how to find it with read-only Microsoft Graph queries, and — the part most teams skip — how to turn the findings into a dollar figure your finance team will actually act on.</p>
+
+  <h2>The five places license waste hides</h2>
+  <ol>
+    <li><strong>Unassigned purchased seats.</strong> You bought the seats; nobody's assigned to them. The cleanest refund at renewal.</li>
+    <li><strong>Disabled-but-licensed accounts.</strong> Blocked sign-in, but still consuming (and billing for) a license every month.</li>
+    <li><strong>Never-signed-in users.</strong> Provisioned, licensed, and never logged in once.</li>
+    <li><strong>Inactive users.</strong> No sign-in in N days — you choose the threshold (30/60/90).</li>
+    <li><strong>Over-provisioning.</strong> Users on E5 who only ever needed E3 ($21/user/mo back), or users carrying two base plans at once.</li>
+  </ol>
+
+  <h2>Step 1 — Read your license inventory</h2>
+  <p>Everything here is read-only. Install the Microsoft Graph PowerShell SDK and connect with read scopes:</p>
+  <pre><code>Install-Module Microsoft.Graph -Scope CurrentUser
+Connect-MgGraph -Scopes "Organization.Read.All","User.Read.All","Directory.Read.All","AuditLog.Read.All"
+
+# Purchased vs assigned per SKU
+Get-MgSubscribedSku | Select-Object SkuPartNumber,
+    @{n='Purchased';e={$_.PrepaidUnits.Enabled}},
+    @{n='Assigned'; e={$_.ConsumedUnits}}</code></pre>
+  <p>The gap between <code>PrepaidUnits.Enabled</code> and <code>ConsumedUnits</code> is your unassigned-seat waste — the fastest win.</p>
+
+  <div class="callout"><strong>Watch the SKU names.</strong> Microsoft's <code>skuPartNumber</code> values are full of legacy traps. Microsoft 365 Business Standard is literally <code>O365_BUSINESS_PREMIUM</code>; Business Premium is <code>SPB</code>. Map them carefully or your report will mislabel seats.</p>
+
+  <h2>Step 2 — Pull users, licenses, and activity</h2>
+  <pre><code>Get-MgUser -All -Property `
+  id,displayName,userPrincipalName,accountEnabled,assignedLicenses,createdDateTime,signInActivity</code></pre>
+  <p>Two gotchas that bite most homegrown scripts:</p>
+  <ul>
+    <li><strong><code>signInActivity</code> requires Microsoft Entra ID P1.</strong> On a non-premium tenant, including it makes Graph return <code>403</code> for the <em>entire</em> query. Wrap it: try with <code>signInActivity</code>, and on failure retry without it (you can still find disabled and unassigned waste).</li>
+    <li><strong>Free/self-service SKUs report a giant "unlimited" seat count.</strong> Power Automate Free and friends can show millions of "prepaid" units. Exclude any SKU whose enabled count is implausibly large before you sum unassigned seats.</li>
+  </ul>
+
+  <h2>Step 3 — Turn seats into dollars</h2>
+  <p>This is the step that separates a useful audit from a CSV nobody reads. "47 inactive users" gets a shrug. "<strong>$13,056/year recoverable</strong>" gets a meeting. Map each <code>skuPartNumber</code> to its real price (use your contracted/regional rate, not just list), then:</p>
+  <table>
+    <tr><th>Finding</th><th>Recoverable $ / month</th></tr>
+    <tr><td>Unassigned seats</td><td>unassigned × unit price</td></tr>
+    <tr><td>Disabled + licensed</td><td>sum of those users' license prices</td></tr>
+    <tr><td>Never signed in</td><td>sum of those users' license prices</td></tr>
+    <tr><td>Inactive &gt; N days</td><td>sum of those users' license prices</td></tr>
+  </table>
+  <p>Annualize (×12) for the headline. Keep over-provisioning (E5→E3, plan overlap) as an <em>advisory</em> section so your headline number stays conservative and defensible.</p>
+
+  <h2>Step 4 — Act, then keep it clean</h2>
+  <p>Reclaim unassigned seats at renewal, strip licenses off disabled accounts, offboard never-signed-in leftovers, and review inactive users with their managers. Then re-run monthly — waste creeps back the moment offboarding slips.</p>
+
+  <div class="cta">
+    <h3 style="margin:0 0 6px">Skip the assembly</h3>
+    <p style="margin:0 0 4px;color:var(--muted)">SeatScout runs every check above in one command and produces a dollar-quantified, CFO-ready report — read-only, entirely inside your own tenant. There's a free tier.</p>
+    <a class="btn" href="/#pricing">Get SeatScout →</a>
+  </div>
+
+  <h2>FAQ</h2>
+  <h3>Can I find unused M365 licenses without Entra ID P1?</h3>
+  <p>Partly. Without P1 you can't read sign-in activity, so inactive/never-signed-in detection is unavailable — but you can still find disabled-but-licensed accounts and unassigned purchased seats, which are often the largest, cleanest wins.</p>
+  <h3>Is querying this data safe?</h3>
+  <p>Yes — all of it is read-only Microsoft Graph. None of the queries above modify your tenant. Reclaiming licenses is a separate, deliberate step you control.</p>
+  <h3>How much can a typical org recover?</h3>
+  <p>Gartner pegs SaaS waste at 25–30% of spend; license-optimization vendors report finding 10–30% of M365 spend as waste in most environments. The exact figure depends on offboarding hygiene and how aggressively E5 was rolled out.</p>
+
+  <p style="margin-top:30px;color:var(--muted);font-size:14px">Sources: Microsoft 365 2026 pricing (Microsoft Licensing); average SaaS license waste 25–30% (Gartner, as cited by license-optimization vendors). SeatScout is independent and not affiliated with Microsoft.</p>
+</div></article>
+
+<footer><div class="wrap">© 2026 SeatScout · <a href="/">Home</a> · <a href="/#pricing">Pricing</a></div></footer>
+</body>
+</html>
