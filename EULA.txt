@@ -35,6 +35,6 @@ By using the Software you agree to the terms below.
    Microsoft. "Microsoft 365", "Microsoft Entra", and related names are trademarks of
    Microsoft Corporation.
 
-Questions: SUPPORT_EMAIL_PLACEHOLDER  ·  seatscout.com
+Questions: SUPPORT_EMAIL_PLACEHOLDER  ·  seatscout.dev
 
 (c) 2026 SeatScout. All rights reserved.
