@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft 365 Price Increase 2026: 7 Ways to Offset It | SeatScout</title>
+<meta name="description" content="Microsoft 365 prices rose up to 33% on July 1, 2026. Seven concrete, read-only ways to offset the increase by cutting license waste — before your next renewal.">
+<link rel="canonical" href="https://seatscout.dev/blog/microsoft-365-price-increase-2026">
+<meta property="og:title" content="Microsoft 365 Price Increase 2026: 7 Ways to Offset It">
+<meta property="og:description" content="Prices rose up to 33% on July 1, 2026. Seven read-only ways to claw the increase back from license waste.">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://seatscout.dev/og-card.png">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/favicon-180.png">
+<style>
+:root{color-scheme:light;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--accent:#2563eb;--good:#059669;--bg:#f8fafc;--code:#0b1220}
+*{box-sizing:border-box}body{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0;color:var(--ink);background:var(--bg);line-height:1.65}
+.wrap{max-width:760px;margin:0 auto;padding:0 24px}
+nav{border-bottom:1px solid var(--line);background:#fff}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:800;font-size:19px;letter-spacing:-.02em}.logo span{color:var(--accent)}
+a{color:var(--accent);text-decoration:none}
+article{padding:48px 0 64px}
+h1{font-size:34px;line-height:1.15;letter-spacing:-.02em;margin:0 0 10px}
+.meta{color:var(--muted);font-size:14px;margin-bottom:28px}
+h2{font-size:21px;margin:32px 0 8px;letter-spacing:-.01em}
+p,li{font-size:16px}
+ul,ol{padding-left:22px}
+.callout{background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px 16px;margin:18px 0;font-size:15px}
+.cta{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;margin:34px 0;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.btn{display:inline-block;background:var(--accent);color:#fff;padding:12px 22px;border-radius:10px;font-weight:600;margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:15px;margin:14px 0}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}th{font-size:13px;color:var(--muted)}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <a class="logo" href="/"><img src="/favicon.svg" alt="" width="28" height="28" style="border-radius:7px;vertical-align:-6px;margin-right:8px">Seat<span>Scout</span></a>
+  <a href="/#pricing">Get SeatScout</a>
+</div></nav>
+
+<article><div class="wrap">
+  <h1>Microsoft 365 price increase 2026: 7 ways to offset it</h1>
+  <div class="meta">Microsoft 365 cost optimization · ~6 min read</div>
+
+  <p>On <strong>July 1, 2026</strong>, Microsoft raised list prices across seven commercial SKUs — by roughly <strong>5% to as much as 33%</strong> depending on the plan. Microsoft 365 E3 went to <strong>$39</strong> (+8.3%), E5 to <strong>$60</strong> (+5.3%), Business Standard to <strong>$14</strong> (+12%); Business Premium held at <strong>$22</strong>. There's also a new top-tier <strong>E7</strong> plan.</p>
+
+  <p>You can't change the list price — but on most tenants you don't need to. Gartner estimates organizations waste <strong>25–30% of SaaS license spend</strong>, which is almost always more than the increase itself. Here are seven read-only ways to claw it back before your next renewal.</p>
+
+  <h2>1. Reclaim unassigned purchased seats</h2>
+  <p>The fastest win. Compare seats purchased vs. seats assigned per SKU — the gap is money you're paying for nothing. Reduce the subscription quantity (or reclaim at renewal). <code>Get-MgSubscribedSku</code> shows <code>prepaidUnits.enabled</code> (purchased) vs <code>consumedUnits</code> (assigned).</p>
+
+  <h2>2. Strip licenses off disabled accounts</h2>
+  <p>Blocked sign-in doesn't stop billing. Accounts that are disabled but still licensed are pure waste — remove the licenses (and finish offboarding).</p>
+
+  <h2>3. Offboard never-signed-in and inactive users</h2>
+  <p>Licensed users who've never signed in, or haven't in 30/60/90 days, are reclaim candidates. Pair the licensing data with sign-in activity, then reassign or remove.</p>
+
+  <h2>4. Downgrade over-provisioned E5 seats to E3</h2>
+  <p>Every E5 seat that doesn't use the premium security, compliance, Power BI, or voice features is $21/user/month over E3 — $252/year each. <a href="/blog/microsoft-365-e5-vs-e3-downgrade">See the full E5-vs-E3 downgrade math →</a></p>
+
+  <h2>5. Consolidate overlapping plans</h2>
+  <p>Users sometimes accumulate two base plans (e.g. E3 + E5, or a standalone that's already included in their suite). Find the overlaps and drop the redundant one.</p>
+
+  <h2>6. Right-size frontline and shared scenarios</h2>
+  <p>Frontline staff often don't need a full knowledge-worker SKU — F-plans exist for that. Shared mailboxes under 50 GB generally don't need a license at all. Both are common sources of quiet overspend.</p>
+
+  <h2>7. Re-run the audit on a schedule</h2>
+  <p>Waste creeps back the moment offboarding slips. A monthly license audit keeps the savings from leaking away — and gives you a clean number for the next renewal conversation.</p>
+
+  <div class="callout"><strong>Lock in current rates where you can.</strong> If you renew before your anniversary you may be able to hold current pricing for a term — but only right-size first, so you're not locking in seats you don't need.</div>
+
+  <div class="cta">
+    <h3 style="margin:0 0 6px">Find your offset in 5 minutes</h3>
+    <p style="margin:0 0 4px;color:var(--muted)">SeatScout runs all seven checks read-only inside your own tenant and reports exactly how much you can recover, in dollars. Free tier available.</p>
+    <a class="btn" href="/#pricing">Get SeatScout →</a>
+  </div>
+
+  <p style="margin-top:24px;color:var(--muted);font-size:14px">Pricing figures are Microsoft public list prices for the July 1, 2026 update (USD); your contracted/regional price may differ. Waste estimate: Gartner, as cited by license-optimization vendors. SeatScout is independent and not affiliated with Microsoft.</p>
+</div></article>
+
+<footer><div class="wrap">© 2026 SeatScout · <a href="/">Home</a> · <a href="/#pricing">Pricing</a> · <a href="/blog/">Blog</a></div></footer>
+</body>
+</html>

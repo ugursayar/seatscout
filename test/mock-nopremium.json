@@ -1,0 +1,138 @@
+{
+  "organization": {
+    "displayName": "Dev Tenant"
+  },
+  "signInRetrievable": false,
+  "subscribedSkus": [
+    {
+      "skuId": "SPE_E3",
+      "skuPartNumber": "SPE_E3",
+      "prepaidUnits": {
+        "enabled": 10
+      },
+      "consumedUnits": 8
+    },
+    {
+      "skuId": "DEVELOPERPACK_E5",
+      "skuPartNumber": "DEVELOPERPACK_E5",
+      "prepaidUnits": {
+        "enabled": 25
+      },
+      "consumedUnits": 22
+    },
+    {
+      "skuId": "FLOW_FREE",
+      "skuPartNumber": "FLOW_FREE",
+      "prepaidUnits": {
+        "enabled": 10000000
+      },
+      "consumedUnits": 5
+    }
+  ],
+  "users": [
+    {
+      "id": "Disabled0",
+      "displayName": "Disabled0",
+      "userPrincipalName": "disabled0@dev.com",
+      "accountEnabled": false,
+      "createdDateTime": "2025-08-30T19:01:30Z",
+      "assignedLicenses": [
+        {
+          "skuId": "SPE_E3"
+        }
+      ],
+      "signInActivity": null
+    },
+    {
+      "id": "Disabled1",
+      "displayName": "Disabled1",
+      "userPrincipalName": "disabled1@dev.com",
+      "accountEnabled": false,
+      "createdDateTime": "2025-08-30T19:01:30Z",
+      "assignedLicenses": [
+        {
+          "skuId": "SPE_E3"
+        }
+      ],
+      "signInActivity": null
+    },
+    {
+      "id": "Active0",
+      "displayName": "Active0",
+      "userPrincipalName": "active0@dev.com",
+      "accountEnabled": true,
+      "createdDateTime": "2025-08-30T19:01:30Z",
+      "assignedLicenses": [
+        {
+          "skuId": "DEVELOPERPACK_E5"
+        }
+      ],
+      "signInActivity": null
+    },
+    {
+      "id": "Active1",
+      "displayName": "Active1",
+      "userPrincipalName": "active1@dev.com",
+      "accountEnabled": true,
+      "createdDateTime": "2025-08-30T19:01:30Z",
+      "assignedLicenses": [
+        {
+          "skuId": "DEVELOPERPACK_E5"
+        }
+      ],
+      "signInActivity": null
+    },
+    {
+      "id": "Active2",
+      "displayName": "Active2",
+      "userPrincipalName": "active2@dev.com",
+      "accountEnabled": true,
+      "createdDateTime": "2025-08-30T19:01:30Z",
+      "assignedLicenses": [
+        {
+          "skuId": "DEVELOPERPACK_E5"
+        }
+      ],
+      "signInActivity": null
+    },
+    {
+      "id": "Active3",
+      "displayName": "Active3",
+      "userPrincipalName": "active3@dev.com",
+      "accountEnabled": true,
+      "createdDateTime": "2025-08-30T19:01:30Z",
+      "assignedLicenses": [
+        {
+          "skuId": "DEVELOPERPACK_E5"
+        }
+      ],
+      "signInActivity": null
+    },
+    {
+      "id": "Active4",
+      "displayName": "Active4",
+      "userPrincipalName": "active4@dev.com",
+      "accountEnabled": true,
+      "createdDateTime": "2025-08-30T19:01:30Z",
+      "assignedLicenses": [
+        {
+          "skuId": "DEVELOPERPACK_E5"
+        }
+      ],
+      "signInActivity": null
+    },
+    {
+      "id": "Active5",
+      "displayName": "Active5",
+      "userPrincipalName": "active5@dev.com",
+      "accountEnabled": true,
+      "createdDateTime": "2025-08-30T19:01:30Z",
+      "assignedLicenses": [
+        {
+          "skuId": "DEVELOPERPACK_E5"
+        }
+      ],
+      "signInActivity": null
+    }
+  ]
+}

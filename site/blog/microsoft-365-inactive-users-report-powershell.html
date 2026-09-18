@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft 365 Inactive Users Report with PowerShell (2026) | SeatScout</title>
+<meta name="description" content="Build a Microsoft 365 inactive users report with PowerShell and Microsoft Graph — using signInActivity, handling the Entra ID P1 requirement, and exporting a clean CSV of reclaimable licensed accounts.">
+<link rel="canonical" href="https://seatscout.dev/blog/microsoft-365-inactive-users-report-powershell">
+<meta property="og:title" content="Microsoft 365 Inactive Users Report with PowerShell (2026)">
+<meta property="og:description" content="Build an inactive-user report via Microsoft Graph signInActivity — with the Entra P1 gotcha handled — and export a clean CSV.">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://seatscout.dev/og-card.png">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/favicon-180.png">
+<style>
+:root{color-scheme:light;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--accent:#2563eb;--good:#059669;--bg:#f8fafc;--code:#0b1220}
+*{box-sizing:border-box}body{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0;color:var(--ink);background:var(--bg);line-height:1.65}
+.wrap{max-width:760px;margin:0 auto;padding:0 24px}
+nav{border-bottom:1px solid var(--line);background:#fff}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:800;font-size:19px;letter-spacing:-.02em}.logo span{color:var(--accent)}
+a{color:var(--accent);text-decoration:none}
+article{padding:48px 0 64px}
+h1{font-size:31px;line-height:1.15;letter-spacing:-.02em;margin:0 0 10px}
+.meta{color:var(--muted);font-size:14px;margin-bottom:28px}
+h2{font-size:21px;margin:30px 0 8px}
+p,li{font-size:16px}ul,ol{padding-left:22px}
+pre{background:var(--code);color:#e2e8f0;padding:16px;border-radius:10px;overflow:auto;font-size:13px;line-height:1.5}
+code{font-family:ui-monospace,Consolas,monospace}
+p code,li code{background:#eef2f7;color:#0b1220;padding:1px 6px;border-radius:5px;font-size:14px}
+.callout{background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px 16px;margin:18px 0;font-size:15px}
+.cta{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;margin:34px 0;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.btn{display:inline-block;background:var(--accent);color:#fff;padding:12px 22px;border-radius:10px;font-weight:600;margin-top:6px}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <a class="logo" href="/"><img src="/favicon.svg" alt="" width="28" height="28" style="border-radius:7px;vertical-align:-6px;margin-right:8px">Seat<span>Scout</span></a>
+  <a href="/#pricing">Get SeatScout</a>
+</div></nav>
+
+<article><div class="wrap">
+  <h1>Build a Microsoft 365 inactive users report with PowerShell (2026)</h1>
+  <div class="meta">Microsoft 365 cost optimization · ~6 min read</div>
+
+  <p>Inactive licensed users are one of the most common sources of Microsoft 365 waste. Here's how to build a clean inactive-users report with the Microsoft Graph PowerShell SDK — including the one property that trips everyone up.</p>
+
+  <div class="callout"><strong>Setup:</strong> <code>Install-Module Microsoft.Graph -Scope CurrentUser</code>, then connect with read-only scopes. The key property, <code>signInActivity</code>, requires <strong>Microsoft Entra ID P1</strong> plus <code>AuditLog.Read.All</code>.</p>
+
+  <h2>The property that matters: signInActivity</h2>
+  <p>Each user object can carry a <code>signInActivity</code> with two fields:</p>
+  <ul>
+    <li><code>lastSignInDateTime</code> — last <em>interactive</em> sign-in (a human logging in).</li>
+    <li><code>lastNonInteractiveSignInDateTime</code> — last token/background sign-in (apps, mail clients).</li>
+  </ul>
+  <p>For "is this person actually using their license," interactive sign-in is the honest signal. Non-interactive can stay warm long after someone's gone (a phone still syncing mail), so don't rely on it alone.</p>
+
+  <div class="callout"><strong>The gotcha:</strong> on a tenant <em>without</em> Entra ID P1, asking for <code>signInActivity</code> returns a <code>403</code> for the entire <code>Get-MgUser</code> query — not just a null field. Wrap it: try with the property, and on failure retry without it (you can still report disabled-but-licensed and never-assigned seats).</p>
+
+  <h2>The report</h2>
+  <pre><code>Connect-MgGraph -Scopes "User.Read.All","AuditLog.Read.All","Organization.Read.All"
+
+$days   = 30
+$cutoff = (Get-Date).AddDays(-$days)
+
+$users = Get-MgUser -All -Property `
+  displayName,userPrincipalName,accountEnabled,createdDateTime,assignedLicenses,signInActivity
+
+$users |
+  Where-Object { $_.AssignedLicenses.Count -gt 0 } |   # licensed only
+  Select-Object displayName, userPrincipalName, accountEnabled,
+    @{n='LastSignIn'; e={ $_.SignInActivity.LastSignInDateTime }},
+    @{n='Status'; e={
+        $last = $_.SignInActivity.LastSignInDateTime
+        if (-not $last) { 'never signed in' }
+        elseif ($last -lt $cutoff) { 'inactive' }
+        else { 'active' }
+    }} |
+  Export-Csv .\m365-inactive-users.csv -NoTypeInformation</code></pre>
+
+  <h2>Two refinements</h2>
+  <ul>
+    <li><strong>Don't flag brand-new accounts.</strong> A user created last week with no sign-in isn't "inactive" — exclude anyone whose <code>createdDateTime</code> is newer than your cutoff.</li>
+    <li><strong>No Entra P1?</strong> You can't read sign-in activity, but Microsoft 365 <em>usage reports</em> (via the Reports API) give activity by workload as a fallback — coarser, but enough to spot dormant accounts.</li>
+  </ul>
+
+  <h2>Turn the report into dollars</h2>
+  <p>A list of inactive users is useful; a dollar figure gets action. Join each user's licenses to your price table and sum the reclaimable spend — that's the number that justifies the cleanup. (<a href="/blog/how-to-find-wasted-microsoft-365-licenses">how the dollar math works →</a>)</p>
+
+  <div class="cta">
+    <h3 style="margin:0 0 6px">Skip the scripting</h3>
+    <p style="margin:0 0 4px;color:var(--muted)">SeatScout builds the inactive-user report (with the P1 fallback handled), prices every seat, and adds disabled/unassigned/downgrade findings — read-only, in your tenant. Free tier available.</p>
+    <a class="btn" href="/#pricing">Get SeatScout →</a>
+  </div>
+
+  <p style="margin-top:8px">Related: <a href="/blog/remove-unused-microsoft-365-licenses">How to remove unused licenses</a> · <a href="/blog/microsoft-365-license-audit-checklist">License audit checklist</a></p>
+
+  <p style="margin-top:20px;color:var(--muted);font-size:13px">SeatScout is independent and not affiliated with Microsoft.</p>
+</div></article>
+
+<footer><div class="wrap">© 2026 SeatScout · <a href="/">Home</a> · <a href="/#pricing">Pricing</a> · <a href="/blog/">Blog</a></div></footer>
+</body>
+</html>

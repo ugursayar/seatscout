@@ -108,4 +108,4 @@ Headline savings = items 1–4 (conservative). Advisory items are listed but not
 
 ---
 
-SeatScout · seatscout.com · Independent tool, not affiliated with or endorsed by Microsoft.
+SeatScout · seatscout.dev · Independent tool, not affiliated with or endorsed by Microsoft.

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft 365 License Audit: Step-by-Step Checklist (2026) | SeatScout</title>
+<meta name="description" content="A practical, read-only Microsoft 365 license audit checklist for 2026 — the exact steps to inventory SKUs, find unused and inactive seats, spot downgrades, and quantify the savings.">
+<link rel="canonical" href="https://seatscout.dev/blog/microsoft-365-license-audit-checklist">
+<meta property="og:title" content="Microsoft 365 License Audit: Step-by-Step Checklist (2026)">
+<meta property="og:description" content="The exact read-only steps to audit M365 licenses, find waste, and quantify the savings — with the PowerShell to do it.">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://seatscout.dev/og-card.png">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/favicon-180.png">
+<style>
+:root{color-scheme:light;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--accent:#2563eb;--good:#059669;--bg:#f8fafc;--code:#0b1220}
+*{box-sizing:border-box}body{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0;color:var(--ink);background:var(--bg);line-height:1.65}
+.wrap{max-width:760px;margin:0 auto;padding:0 24px}
+nav{border-bottom:1px solid var(--line);background:#fff}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:800;font-size:19px;letter-spacing:-.02em}.logo span{color:var(--accent)}
+a{color:var(--accent);text-decoration:none}
+article{padding:48px 0 64px}
+h1{font-size:33px;line-height:1.15;letter-spacing:-.02em;margin:0 0 10px}
+.meta{color:var(--muted);font-size:14px;margin-bottom:28px}
+h2{font-size:21px;margin:30px 0 8px;letter-spacing:-.01em}
+p,li{font-size:16px}
+ul,ol{padding-left:22px}
+ol.steps>li{margin:14px 0}
+pre{background:var(--code);color:#e2e8f0;padding:16px;border-radius:10px;overflow:auto;font-size:13px;line-height:1.5}
+code{font-family:ui-monospace,Consolas,monospace}
+p code,li code{background:#eef2f7;color:#0b1220;padding:1px 6px;border-radius:5px;font-size:14px}
+.callout{background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px 16px;margin:18px 0;font-size:15px}
+.cta{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;margin:34px 0;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.btn{display:inline-block;background:var(--accent);color:#fff;padding:12px 22px;border-radius:10px;font-weight:600;margin-top:6px}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <a class="logo" href="/"><img src="/favicon.svg" alt="" width="28" height="28" style="border-radius:7px;vertical-align:-6px;margin-right:8px">Seat<span>Scout</span></a>
+  <a href="/#pricing">Get SeatScout</a>
+</div></nav>
+
+<article><div class="wrap">
+  <h1>Microsoft 365 license audit: a step-by-step checklist (2026)</h1>
+  <div class="meta">Microsoft 365 cost optimization · ~7 min read</div>
+
+  <p>A Microsoft 365 license audit doesn't need a platform or a consultant — it needs a repeatable, read-only process. This is the checklist we'd run on any tenant: inventory what you own, find what's wasted, spot what can be downgraded, and put a dollar figure on it. Everything here is read-only and runs inside your own tenant.</p>
+
+  <div class="callout"><strong>Before you start:</strong> you need an account that can read directory + usage data (Global Reader is enough) and the Microsoft Graph PowerShell SDK: <code>Install-Module Microsoft.Graph -Scope CurrentUser</code>. Sign-in activity additionally needs Microsoft Entra ID P1.</div>
+
+  <h2>The checklist</h2>
+  <ol class="steps">
+    <li><strong>Inventory your SKUs.</strong> List every license you've purchased vs. assigned. The gap is unassigned waste. <code>Get-MgSubscribedSku</code> gives <code>prepaidUnits.enabled</code> (bought) vs <code>consumedUnits</code> (assigned).</li>
+    <li><strong>Map SKUs to real prices.</strong> Use <em>your</em> contracted/regional price, not just list. Watch the legacy names — Microsoft 365 Business Standard's part number is literally <code>O365_BUSINESS_PREMIUM</code>.</li>
+    <li><strong>Find unassigned seats.</strong> Any SKU where purchased &gt; assigned is money spent on nothing. The cleanest win — reduce quantity at (or before) renewal.</li>
+    <li><strong>Find disabled-but-licensed accounts.</strong> Blocked sign-in doesn't stop billing. Anyone with <code>accountEnabled = false</code> who still holds a license is pure waste.</li>
+    <li><strong>Find never-signed-in users.</strong> Licensed accounts with no sign-in ever (and old enough to be meaningful) — provisioned and forgotten.</li>
+    <li><strong>Find inactive users.</strong> No sign-in in your chosen window (30/60/90 days). Reclaim or reassign after checking with their manager.</li>
+    <li><strong>Spot overlapping plans.</strong> Users carrying two base plans (e.g. E3 + E5) — drop the redundant one.</li>
+    <li><strong>Spot downgrade candidates.</strong> E5 seats not using premium security/compliance/Power BI/voice can move to E3 — $21/user/month. (<a href="/blog/microsoft-365-e5-vs-e3-downgrade">full E5-vs-E3 math →</a>)</li>
+    <li><strong>Quantify it.</strong> Multiply each reclaimable seat by its price × 12. "47 inactive users" is a shrug; "$X,000/year recoverable" gets a decision.</li>
+    <li><strong>Remediate, then schedule.</strong> Reclaim at renewal, remove licenses from disabled accounts, and re-run monthly — waste creeps back the moment offboarding slips.</li>
+  </ol>
+
+  <h2>The starter queries</h2>
+  <pre><code>Connect-MgGraph -Scopes "Organization.Read.All","User.Read.All","Directory.Read.All","AuditLog.Read.All"
+
+# 1) Purchased vs assigned per SKU
+Get-MgSubscribedSku | Select SkuPartNumber,
+  @{n='Purchased';e={$_.PrepaidUnits.Enabled}}, @{n='Assigned';e={$_.ConsumedUnits}}
+
+# 2) Licensed users + status + last sign-in
+Get-MgUser -All -Property displayName,userPrincipalName,accountEnabled,assignedLicenses,signInActivity |
+  Where-Object { $_.AssignedLicenses.Count -gt 0 }</code></pre>
+
+  <div class="callout"><strong>Two gotchas that trip up DIY audits:</strong> requesting <code>signInActivity</code> on a tenant without Entra ID P1 returns a 403 for the whole query (retry without it); and free/self-service SKUs report a giant "unlimited" prepaid count you must exclude before summing unassigned seats.</div>
+
+  <h2>Do it automatically</h2>
+  <p>That's the whole audit — but assembling the scripts, handling the gotchas, pricing each seat, and formatting a report takes an afternoon each time.</p>
+
+  <div class="cta">
+    <h3 style="margin:0 0 6px">Run the whole checklist in one command</h3>
+    <p style="margin:0 0 4px;color:var(--muted)">SeatScout does every step above read-only and produces a dollar-quantified, CFO-ready report (plus CSVs and a remediation checklist). Free tier available.</p>
+    <a class="btn" href="/#pricing">Get SeatScout →</a>
+  </div>
+
+  <p style="margin-top:8px">Related: <a href="/blog/how-to-find-wasted-microsoft-365-licenses">How to find wasted M365 licenses</a> · <a href="/blog/microsoft-365-price-increase-2026">Offset the 2026 price increase</a> · <a href="/blog/best-microsoft-365-license-optimization-tools">Best M365 license tools compared</a></p>
+
+  <p style="margin-top:20px;color:var(--muted);font-size:13px">SeatScout is independent and not affiliated with Microsoft. Prices referenced are public list prices; your agreement may differ.</p>
+</div></article>
+
+<footer><div class="wrap">© 2026 SeatScout · <a href="/">Home</a> · <a href="/#pricing">Pricing</a> · <a href="/blog/">Blog</a></div></footer>
+</body>
+</html>

@@ -14,3 +14,6 @@ Thumbs.db
 # Local secrets / config overrides (never commit credentials)
 *.local
 .env
+
+# Wrangler local cache (contains the Cloudflare account id)
+.wrangler/

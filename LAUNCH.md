@@ -9,8 +9,8 @@
 
 Ordered. Costs in **bold**.
 
-1. **Buy the domain** — `seatscout.com` was available at time of build (**~$12–15/yr**).
-   Register at any registrar (e.g. https://www.godaddy.com/domainsearch/find?domainToCheck=seatscout.com or Cloudflare Registrar, which is at-cost).
+1. **Buy the domain** — `seatscout.dev` was available at time of build (**~$12–15/yr**).
+   Register at any registrar (e.g. https://www.godaddy.com/domainsearch/find?domainToCheck=seatscout.dev or Cloudflare Registrar, which is at-cost).
    Backups if taken: `skusaver.com`, `idleseat.com`, `tenanttrim.com`.
 
 2. **Create a Lemon Squeezy account** (merchant-of-record; works from Turkey, handles global VAT) — **free**, takes a % per sale (~5% + 50¢).
@@ -32,7 +32,7 @@ Ordered. Costs in **bold**.
    - `LEMONSQUEEZY_SUPPORT_EMAIL` (use a simple support address)
    (Tell me when accounts exist and I'll do the find-replace + any tweaks.)
 
-5. **Deploy the site** — **free**. Cloudflare Pages or Vercel: drag the `site/` folder (and `sample/`) or connect a GitHub repo. Point `seatscout.com` DNS at it. (I can write the exact steps / a deploy config when you're ready.)
+5. **Deploy the site** — **free**. Cloudflare Pages or Vercel: drag the `site/` folder (and `sample/`) or connect a GitHub repo. Point `seatscout.dev` DNS at it. (I can write the exact steps / a deploy config when you're ready.)
 
 6. **One real-tenant test** (the validation gate): run
    `.\SeatScout-Audit.ps1 -InactiveDays 30`

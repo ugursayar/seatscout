@@ -5,7 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SeatScout — Find wasted Microsoft 365 licenses. Recover the spend.</title>
 <meta name="description" content="SeatScout audits your Microsoft 365 tenant read-only and shows exactly how much license spend you can recover — unused, inactive, disabled and over-provisioned seats, quantified in dollars. Runs in your tenant; nothing leaves it.">
-<!-- TODO(owner): replace LEMONSQUEEZY_* placeholders with your real checkout/links before launch -->
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/favicon-180.png">
+<meta property="og:title" content="SeatScout — Recover wasted Microsoft 365 license spend">
+<meta property="og:description" content="Read-only audit that shows how much M365 license spend you can recover — in dollars. Free tier.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://seatscout.dev/">
+<meta property="og:image" content="https://seatscout.dev/og-card.png">
 <style>
 :root{--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--accent:#2563eb;--accent2:#1d4ed8;--good:#059669;--bg:#f8fafc;--card:#fff}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
@@ -67,7 +74,7 @@ footer .src{font-size:11px;max-width:780px;margin:14px auto 0;color:#94a3b8}
 </head>
 <body>
 <nav><div class="wrap">
-  <div class="logo">Seat<span>Scout</span></div>
+  <div class="logo"><img src="/favicon.svg" alt="" width="30" height="30" style="border-radius:7px;vertical-align:-7px;margin-right:8px">Seat<span>Scout</span></div>
   <div class="links">
     <a href="#how">How it works</a>
     <a href="#pricing">Pricing</a>
@@ -82,7 +89,7 @@ footer .src{font-size:11px;max-width:780px;margin:14px auto 0;color:#94a3b8}
   <p class="lead">SeatScout audits your tenant in minutes — unused, inactive, disabled, and over-provisioned seats — and shows exactly how much you can recover, in dollars. Read-only. Runs in your tenant. Nothing ever leaves it.</p>
   <div class="cta-row">
     <a class="btn lg" href="#pricing">See pricing</a>
-    <a class="btn lg ghost" href="LEMONSQUEEZY_LITE_URL">Download free Lite →</a>
+    <a class="btn lg ghost" href="https://seatscout.lemonsqueezy.com/checkout/buy/a01fca39-0619-41bf-b727-2862d47e7af2">Download free Lite →</a>
   </div>
   <div class="trust">No agent to install · No data collected · PowerShell + Microsoft Graph · Cancel-anytime ownership (one-time price)</div>
 </div></header>
@@ -122,7 +129,7 @@ footer .src{font-size:11px;max-width:780px;margin:14px auto 0;color:#94a3b8}
       <div class="pcard"><div class="n">15</div><div class="l">Unassigned seats</div></div>
     </div>
     <div style="font-size:12px;color:var(--muted)">Example output from a 100-seat sample tenant.</div>
-    <div style="margin-top:18px"><a class="btn" href="../sample/SeatScout-Report.html" target="_blank">View the full sample report →</a></div>
+    <div style="margin-top:18px"><a class="btn" href="/sample/SeatScout-Report.html" target="_blank">View the full sample report →</a></div>
   </div>
 </div></section>
 
@@ -151,7 +158,7 @@ footer .src{font-size:11px;max-width:780px;margin:14px auto 0;color:#94a3b8}
         <li class="no">HTML savings report</li>
         <li class="no">Overlap &amp; downgrade analysis</li>
       </ul>
-      <a class="btn ghost" href="LEMONSQUEEZY_LITE_URL">Download free</a>
+      <a class="btn ghost" href="https://seatscout.lemonsqueezy.com/checkout/buy/a01fca39-0619-41bf-b727-2862d47e7af2">Download free</a>
     </div>
     <div class="plan feat">
       <span class="tag">Most popular</span>
@@ -165,7 +172,7 @@ footer .src{font-size:11px;max-width:780px;margin:14px auto 0;color:#94a3b8}
         <li>1 tenant · email support</li>
         <li>12 months of updates</li>
       </ul>
-      <a class="btn" href="LEMONSQUEEZY_SOLO_URL">Get Solo — $49</a>
+      <a class="btn" href="https://seatscout.lemonsqueezy.com/checkout/buy/0e4ed6d9-9c36-4e76-b0b6-1d09d557fa65">Get Solo — $49</a>
     </div>
     <div class="plan">
       <div class="name">Pro · for consultants &amp; MSPs</div>
@@ -177,7 +184,7 @@ footer .src{font-size:11px;max-width:780px;margin:14px auto 0;color:#94a3b8}
         <li>Priority support</li>
         <li>12 months of updates</li>
       </ul>
-      <a class="btn" href="LEMONSQUEEZY_PRO_URL">Get Pro — $129</a>
+      <a class="btn" href="https://seatscout.lemonsqueezy.com/checkout/buy/5f2ab132-13d1-403a-8998-b53d3e39ac2c">Get Pro — $129</a>
     </div>
   </div>
   <p style="text-align:center;color:var(--muted);font-size:13px;margin-top:18px">Pay securely via Lemon Squeezy (handles VAT/tax worldwide). Instant download.</p>
@@ -200,17 +207,18 @@ footer .src{font-size:11px;max-width:780px;margin:14px auto 0;color:#94a3b8}
     <h2>See what you're wasting — free</h2>
     <p>Run the free Lite audit today. Upgrade only if the number is worth it (it usually is).</p>
     <div class="cta-row">
-      <a class="btn lg" href="LEMONSQUEEZY_LITE_URL" style="background:#fff;color:var(--ink)">Download free Lite</a>
+      <a class="btn lg" href="https://seatscout.lemonsqueezy.com/checkout/buy/a01fca39-0619-41bf-b727-2862d47e7af2" style="background:#fff;color:var(--ink)">Download free Lite</a>
       <a class="btn lg ghost" href="#pricing" style="color:#fff;border-color:#475569">Compare plans</a>
     </div>
   </div>
 </div></section>
 
 <footer><div class="wrap">
-  <div class="logo" style="font-size:16px">Seat<span>Scout</span></div>
-  <div style="margin-top:6px">Recover wasted Microsoft 365 license spend. · seatscout.com</div>
-  <div style="margin-top:10px"><a href="#pricing">Pricing</a> · <a href="#faq">FAQ</a> · <a href="mailto:LEMONSQUEEZY_SUPPORT_EMAIL">Support</a></div>
-  <p class="src">Sources: Microsoft 365 2026 pricing & July 1 2026 increases (Microsoft Licensing). Average SaaS license waste of 25–30% (Gartner, as cited by license-optimization vendors). SeatScout is an independent tool and is not affiliated with or endorsed by Microsoft. "Microsoft 365", "Entra", and related names are trademarks of Microsoft.</p>
+  <div class="logo" style="font-size:16px"><img src="/favicon.svg" alt="" width="24" height="24" style="border-radius:6px;vertical-align:-5px;margin-right:6px">Seat<span>Scout</span></div>
+  <div style="margin-top:6px">Recover wasted Microsoft 365 license spend. · seatscout.dev</div>
+  <div style="margin-top:8px;font-size:12px">Part of the Scout suite · <a href="https://storagescout.dev">StorageScout</a> for storage · <a href="https://pilotscout.dev">PilotScout</a> for Copilot seats · <a href="https://powerscout.dev">PowerScout</a> for Power Platform · <a href="https://sharescout.dev">ShareScout</a> for oversharing · <a href="https://m365scouts.com">m365scouts.com</a></div>
+  <div style="margin-top:10px"><a href="#pricing">Pricing</a> · <a href="#faq">FAQ</a> · <a href="/blog/">Blog</a> · <a href="mailto:support@m365scouts.com">Support</a></div>
+  <p class="src">Sources: Microsoft 365 2026 pricing &amp; July 1 2026 increases (Microsoft Licensing). Average SaaS license waste of 25–30% (Gartner, as cited by license-optimization vendors). SeatScout is an independent tool and is not affiliated with or endorsed by Microsoft. "Microsoft 365", "Entra", and related names are trademarks of Microsoft.</p>
 </div></footer>
 </body>
 </html>

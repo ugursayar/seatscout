@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft 365 E5 vs E3: Should You Downgrade? (2026 Savings Math) | SeatScout</title>
+<meta name="description" content="A practical 2026 guide to deciding whether to downgrade Microsoft 365 E5 to E3 — what E5 actually adds, how to spot over-licensed users, and the per-seat savings math.">
+<link rel="canonical" href="https://seatscout.dev/blog/microsoft-365-e5-vs-e3-downgrade">
+<meta property="og:title" content="Microsoft 365 E5 vs E3: Should You Downgrade? (2026)">
+<meta property="og:description" content="What E5 adds over E3, how to find over-licensed users, and the $21/user/mo downgrade math.">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://seatscout.dev/og-card.png">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/favicon-180.png">
+<style>
+:root{color-scheme:light;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--accent:#2563eb;--good:#059669;--bg:#f8fafc;--code:#0b1220}
+*{box-sizing:border-box}body{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0;color:var(--ink);background:var(--bg);line-height:1.65}
+.wrap{max-width:760px;margin:0 auto;padding:0 24px}
+nav{border-bottom:1px solid var(--line);background:#fff}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:800;font-size:19px;letter-spacing:-.02em}.logo span{color:var(--accent)}
+a{color:var(--accent);text-decoration:none}
+article{padding:48px 0 64px}
+h1{font-size:34px;line-height:1.15;letter-spacing:-.02em;margin:0 0 10px}
+.meta{color:var(--muted);font-size:14px;margin-bottom:28px}
+h2{font-size:22px;margin:34px 0 10px;letter-spacing:-.01em}
+h3{font-size:17px;margin:22px 0 6px}
+p,li{font-size:16px}
+ul,ol{padding-left:22px}
+pre{background:var(--code);color:#e2e8f0;padding:16px;border-radius:10px;overflow:auto;font-size:13px;line-height:1.5}
+code{font-family:ui-monospace,Consolas,monospace}
+p code,li code{background:#eef2f7;color:#0b1220;padding:1px 6px;border-radius:5px;font-size:14px}
+.callout{background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px 16px;margin:18px 0;font-size:15px}
+.cta{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;margin:34px 0;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.btn{display:inline-block;background:var(--accent);color:#fff;padding:12px 22px;border-radius:10px;font-weight:600;margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:15px;margin:14px 0}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}th{font-size:13px;color:var(--muted)}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <a class="logo" href="/"><img src="/favicon.svg" alt="" width="28" height="28" style="border-radius:7px;vertical-align:-6px;margin-right:8px">Seat<span>Scout</span></a>
+  <a href="/#pricing">Get SeatScout</a>
+</div></nav>
+
+<article><div class="wrap">
+  <h1>Microsoft 365 E5 vs E3: should you downgrade? (2026 savings math)</h1>
+  <div class="meta">Microsoft 365 cost optimization · ~6 min read</div>
+
+  <p>Microsoft 365 E5 lists at <strong>$60 per user/month</strong> in 2026; E3 lists at <strong>$39</strong>. That's a <strong>$21/user/month</strong> gap — <strong>$252 a year, per seat</strong>. On any tenant that rolled out E5 broadly "to be safe," a chunk of those seats are paying for capabilities nobody touches. This guide covers what E5 actually adds, how to spot users who'd be fine on E3, and how to validate before you downgrade.</p>
+
+  <h2>What E5 adds over E3</h2>
+  <p>E3 already includes the Office apps, Exchange, SharePoint, OneDrive, Teams, and a solid baseline of security and compliance. E5 layers on the premium tiers that most organizations only partly use:</p>
+  <ul>
+    <li><strong>Advanced security:</strong> Microsoft Defender for Office 365 Plan 2, Defender for Endpoint P2, Defender for Identity.</li>
+    <li><strong>Advanced compliance:</strong> Insider Risk, Communication Compliance, Advanced eDiscovery, advanced Information Protection.</li>
+    <li><strong>Analytics:</strong> Power BI Pro included.</li>
+    <li><strong>Voice:</strong> Teams Phone System + Audio Conferencing.</li>
+  </ul>
+  <p>The question is never "is E5 better?" — it obviously is. It's "is each E5 seat using enough of those extras to justify $21/month over E3?" For a lot of seats, the honest answer is no.</p>
+
+  <h2>Who genuinely needs E5</h2>
+  <p>Keep E5 where the premium features are actually load-bearing:</p>
+  <ul>
+    <li>Security/SOC staff using Defender P2, threat hunting, or Identity protection.</li>
+    <li>Compliance/legal teams running eDiscovery, Insider Risk, or Communication Compliance.</li>
+    <li>Analysts who genuinely use Power BI Pro (and aren't covered by a standalone Power BI license).</li>
+    <li>Anyone using Teams Phone System for PSTN calling.</li>
+  </ul>
+  <p>Everyone else — standard knowledge workers who open Office, email, and Teams — is usually a clean E3 (or even Business Premium under 300 seats) candidate.</p>
+
+  <h2>The downgrade math</h2>
+  <table>
+    <tr><th>Downgrade</th><th>Saving / user / mo</th><th>Saving / user / yr</th></tr>
+    <tr><td>E5 → E3</td><td>$21</td><td>$252</td></tr>
+    <tr><td>E3 → Business Premium*</td><td>$17</td><td>$204</td></tr>
+  </table>
+  <p style="color:var(--muted);font-size:14px">*Business Premium ($22/user/mo) is only available up to 300 seats and has feature differences — validate fit before moving.</p>
+  <p>Move 25 over-provisioned users from E5 to E3 and that's <strong>$6,300/year</strong>. The savings scale linearly, and they recur every year.</p>
+
+  <h2>How to find downgrade candidates (read-only)</h2>
+  <p>Start by listing who holds E5, then layer on usage signals so you only flag people who clearly aren't using the premium features. With the Microsoft Graph PowerShell SDK:</p>
+  <pre><code>Connect-MgGraph -Scopes "Organization.Read.All","User.Read.All","Reports.Read.All"
+
+# Everyone on Microsoft 365 E5 (skuPartNumber SPE_E5)
+$e5 = (Get-MgSubscribedSku | Where-Object SkuPartNumber -eq 'SPE_E5').SkuId
+Get-MgUser -All -Property displayName,userPrincipalName,assignedLicenses |
+  Where-Object { $_.AssignedLicenses.SkuId -contains $e5 } |
+  Select-Object displayName, userPrincipalName</code></pre>
+  <p>Then cross-reference against usage: who actually signs into the security/compliance portals, who has Power BI Pro activity, who's enabled for Teams Phone. Microsoft 365 usage reports and the Defender/Purview portals show this. Anyone on E5 with no premium-feature footprint is a downgrade candidate to review with the business owner.</p>
+
+  <div class="callout"><strong>Validate before you cut.</strong> A downgrade is a real change — confirm a user isn't relying on an E5-only feature (a compliance hold, a Defender policy, Teams calling) before reassigning. Treat the candidate list as a review queue, not an auto-action.</div>
+
+  <div class="cta">
+    <h3 style="margin:0 0 6px">Let SeatScout build the list for you</h3>
+    <p style="margin:0 0 4px;color:var(--muted)">SeatScout flags E5→E3 downgrade candidates automatically (alongside unused, inactive, and disabled-but-licensed seats) and quantifies the savings in dollars — read-only, entirely inside your own tenant. Free tier available.</p>
+    <a class="btn" href="/#pricing">Get SeatScout →</a>
+  </div>
+
+  <p style="margin-top:8px"><a href="/blog/how-to-find-wasted-microsoft-365-licenses">Related: How to find wasted Microsoft 365 licenses (2026 guide) →</a></p>
+
+  <p style="margin-top:24px;color:var(--muted);font-size:14px">Prices are Microsoft public list prices effective July 1, 2026 (USD); your contracted/regional price may differ. SeatScout is independent and not affiliated with Microsoft.</p>
+</div></article>
+
+<footer><div class="wrap">© 2026 SeatScout · <a href="/">Home</a> · <a href="/#pricing">Pricing</a> · <a href="/blog/">Blog</a></div></footer>
+</body>
+</html>
